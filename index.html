@@ -1,0 +1,1605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crystal Rays — Learning & Development</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#22261F;
+    --paper:#F4F7F1;
+    --card:#FFFFFF;
+    --chili:#E8442E;
+    --herb:#3E7C4F;
+    --mango:#F5B32B;
+    --line:#D8DDD2;
+    --mono:'IBM Plex Mono', monospace;
+    --body:'Instrument Sans', sans-serif;
+    --display:'Bricolage Grotesque', sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    *,*::before,*::after{animation:none!important;transition:none!important}
+  }
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--body);
+    font-size:17px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit}
+  :focus-visible{outline:3px solid var(--chili);outline-offset:3px;border-radius:2px}
+
+  /* ---------- progress header ---------- */
+  .lms-bar{
+    position:fixed;top:0;left:0;right:0;z-index:50;
+    background:var(--ink);color:var(--paper);
+    display:flex;align-items:center;gap:16px;
+    padding:10px 20px;
+    font-family:var(--mono);font-size:12px;letter-spacing:.04em;
+  }
+  .lms-bar .who{font-weight:600;white-space:nowrap}
+  .lms-track{
+    flex:1;height:8px;border-radius:99px;
+    background:rgba(255,255,255,.18);overflow:hidden;
+  }
+  .lms-fill{
+    height:100%;width:0%;
+    background:linear-gradient(90deg,var(--chili),var(--mango));
+    border-radius:99px;
+    transition:width .1s linear;
+  }
+  .lms-pct{min-width:96px;text-align:right;white-space:nowrap}
+  .lms-pct .done-flag{color:var(--mango);display:none}
+  @media(max-width:560px){
+    .lms-bar .who span.role{display:none}
+    .lms-pct{min-width:44px}
+  }
+
+  main{padding-top:44px}
+  .wrap{max-width:1060px;margin:0 auto;padding:0 24px}
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height:calc(100vh - 44px);
+    display:flex;flex-direction:column;justify-content:center;
+    position:relative;overflow:hidden;
+    padding:96px 0 72px;
+  }
+  .eyebrow{
+    font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--herb);
+    display:flex;align-items:center;gap:10px;margin-bottom:28px;
+  }
+  .eyebrow::before{
+    content:"";width:34px;height:2px;background:var(--herb);display:inline-block;
+  }
+  .hero h1{
+    font-family:var(--display);
+    font-size:clamp(2.6rem,7.2vw,5.6rem);
+    line-height:1.02;font-weight:750;
+    letter-spacing:-.02em;
+    max-width:14ch;
+  }
+  .hero h1 .finish{
+    color:var(--chili);
+    font-style:italic;font-weight:800;
+    position:relative;white-space:nowrap;
+  }
+  .hero h1 .finish::after{
+    content:"";position:absolute;left:0;right:0;bottom:.04em;height:.09em;
+    background:var(--mango);z-index:-1;
+  }
+  .hero p.lede{
+    margin-top:30px;max-width:52ch;font-size:1.15rem;color:#4A4F44;
+  }
+  .hero .meta-row{
+    margin-top:26px;display:flex;flex-wrap:wrap;gap:10px;
+    font-family:var(--mono);font-size:12px;
+  }
+  .chip{
+    border:1.5px solid var(--ink);border-radius:99px;
+    padding:6px 14px;background:var(--card);
+  }
+  .start-btn{
+    margin-top:44px;display:inline-flex;align-items:center;gap:12px;
+    background:var(--chili);color:#fff;text-decoration:none;
+    font-family:var(--mono);font-size:14px;font-weight:600;letter-spacing:.05em;
+    padding:16px 28px;border-radius:12px;
+    box-shadow:0 4px 0 #B32E1C;
+    transition:transform .12s ease, box-shadow .12s ease;
+    width:max-content;
+  }
+  .start-btn:hover{transform:translateY(2px);box-shadow:0 2px 0 #B32E1C}
+  .start-btn .arrow{display:inline-block;animation:bob 1.6s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+
+  .hero .storyboard{
+    position:absolute;right:-40px;top:50%;transform:translateY(-50%) rotate(4deg);
+    width:340px;opacity:.9;pointer-events:none;
+  }
+  @media(max-width:960px){.hero .storyboard{display:none}}
+  .frame{
+    background:var(--card);border:2px solid var(--ink);border-radius:12px;
+    padding:12px;margin-bottom:14px;
+    box-shadow:6px 6px 0 rgba(34,38,31,.12);
+    font-family:var(--mono);font-size:11px;
+  }
+  .frame .screen{
+    height:74px;border-radius:6px;margin-bottom:8px;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-weight:600;letter-spacing:.08em;
+  }
+  .frame:nth-child(1) .screen{background:var(--herb)}
+  .frame:nth-child(2) .screen{background:var(--chili)}
+  .frame:nth-child(3) .screen{background:var(--mango);color:var(--ink)}
+  .frame:nth-child(2){transform:rotate(-3deg)}
+  .frame:nth-child(3){transform:rotate(2deg)}
+
+  /* ---------- lesson sections ---------- */
+  section.lesson{padding:96px 0;border-top:2px solid var(--line)}
+  .lesson-tag{
+    font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;
+    display:inline-flex;align-items:center;gap:10px;
+    background:var(--ink);color:var(--paper);
+    padding:7px 16px;border-radius:99px;margin-bottom:26px;
+  }
+  .lesson-tag .dot{width:8px;height:8px;border-radius:50%;background:var(--mango)}
+  section h2{
+    font-family:var(--display);
+    font-size:clamp(1.9rem,4.4vw,3.1rem);
+    line-height:1.08;font-weight:700;letter-spacing:-.015em;
+    max-width:22ch;margin-bottom:18px;
+  }
+  section .sub{max-width:60ch;color:#4A4F44;font-size:1.06rem}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+  .reveal.in{opacity:1;transform:none}
+
+  /* ---------- video ---------- */
+  .video-shell{
+    margin-top:48px;
+    background:var(--ink);
+    border:2px solid var(--ink);border-radius:18px;
+    overflow:hidden;
+    box-shadow:8px 8px 0 rgba(62,124,79,.2);
+  }
+  .video-shell .video-inner{
+    position:relative;width:100%;aspect-ratio:16/9;
+  }
+  .video-shell iframe{
+    position:absolute;inset:0;width:100%;height:100%;border:0;
+  }
+  .video-placeholder{
+    position:absolute;inset:14px;
+    border:2px dashed rgba(255,255,255,.35);border-radius:12px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+    color:#C9CEC2;text-align:center;padding:24px;
+  }
+  .video-placeholder .play{
+    width:64px;height:64px;border-radius:50%;
+    background:var(--chili);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.4rem;padding-left:5px;
+  }
+  .video-placeholder .vp-title{font-family:var(--display);font-weight:700;font-size:1.2rem;color:var(--paper)}
+  .video-placeholder .vp-hint{font-family:var(--mono);font-size:12px;max-width:46ch;line-height:1.7}
+  .video-caption{
+    font-family:var(--mono);font-size:12px;color:#6B7062;margin-top:14px;
+    display:flex;gap:8px;align-items:center;
+  }
+
+  /* ---------- pipeline ---------- */
+  .pipeline{
+    display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:52px;
+  }
+  @media(max-width:900px){.pipeline{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.pipeline{grid-template-columns:1fr}}
+  .step{
+    background:var(--card);border:2px solid var(--ink);border-radius:14px;
+    padding:20px 18px 22px;position:relative;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .step:hover{transform:translateY(-5px);box-shadow:0 8px 0 rgba(34,38,31,.14)}
+  .step .num{
+    font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+    color:var(--chili);font-weight:600;margin-bottom:10px;display:block;
+  }
+  .step h3{font-family:var(--display);font-size:1.15rem;font-weight:700;margin-bottom:8px}
+  .step p{font-size:.9rem;color:#4A4F44;line-height:1.5}
+  .step .glyph{font-size:1.5rem;margin-bottom:12px;display:block}
+  .pipeline-note{
+    margin-top:34px;font-family:var(--mono);font-size:13px;
+    background:var(--mango);border:2px solid var(--ink);border-radius:12px;
+    padding:16px 20px;max-width:640px;
+  }
+
+  /* ---------- experience ---------- */
+  .xp{margin-top:56px;display:flex;flex-direction:column;gap:0}
+  .xp-item{
+    display:grid;grid-template-columns:170px 1fr;gap:28px;
+    padding:30px 0;border-top:1.5px dashed var(--line);
+  }
+  .xp-item:first-child{border-top:none}
+  @media(max-width:640px){.xp-item{grid-template-columns:1fr;gap:8px}}
+  .xp-when{font-family:var(--mono);font-size:12.5px;color:#6B7062;padding-top:5px}
+  .xp-role{font-family:var(--display);font-weight:700;font-size:1.25rem}
+  .xp-org{font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--herb);margin:4px 0 10px}
+  .xp-item p{color:#4A4F44;font-size:.98rem;max-width:62ch}
+  .xp-badge{
+    display:inline-block;font-family:var(--mono);font-size:11px;
+    background:var(--chili);color:#fff;border-radius:6px;
+    padding:3px 9px;margin-left:10px;vertical-align:middle;letter-spacing:.05em;
+  }
+  .floor-strip{
+    margin-top:52px;background:var(--ink);color:var(--paper);
+    border-radius:18px;padding:34px 36px;
+    display:grid;grid-template-columns:repeat(3,1fr);gap:28px;
+  }
+  @media(max-width:720px){.floor-strip{grid-template-columns:1fr}}
+  .floor-strip .stat b{
+    font-family:var(--display);font-size:2.3rem;font-weight:750;display:block;line-height:1;
+    color:var(--mango);
+  }
+  .floor-strip .stat span{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;display:block;margin-top:10px;color:#C9CEC2}
+
+  /* ---------- toolkit ---------- */
+  .kit{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:52px}
+  @media(max-width:760px){.kit{grid-template-columns:1fr}}
+  .kit-card{
+    background:var(--card);border:2px solid var(--ink);border-radius:16px;padding:26px;
+  }
+  .kit-card h3{
+    font-family:var(--mono);font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;
+    margin-bottom:16px;display:flex;align-items:center;gap:10px;
+  }
+  .kit-card h3::before{content:"";width:10px;height:10px;border-radius:3px;background:var(--chili)}
+  .kit-card:nth-child(2) h3::before{background:var(--herb)}
+  .kit-card:nth-child(3) h3::before{background:var(--mango)}
+  .kit-card:nth-child(4) h3::before{background:var(--ink)}
+  .tags{display:flex;flex-wrap:wrap;gap:8px}
+  .tag{
+    font-family:var(--mono);font-size:12.5px;
+    border:1.5px solid var(--line);background:var(--paper);
+    border-radius:8px;padding:6px 12px;
+    transition:border-color .15s ease;
+  }
+  .tag:hover{border-color:var(--ink)}
+  .kit-card p.note{font-size:.92rem;color:#4A4F44;margin-top:14px}
+
+  /* ---------- embedded game ---------- */
+  .game-shell{
+    border:2px solid var(--ink);border-radius:18px;
+    overflow:hidden;background:#FFF6E3;
+    box-shadow:8px 8px 0 rgba(245,179,43,.4);
+  }
+  .game-shell iframe{display:block;width:100%;height:780px;border:0}
+  @media(max-width:640px){.game-shell iframe{height:660px}}
+
+  /* ---------- studio strip ---------- */
+  .studio-strip{
+    margin-top:48px;background:var(--herb);color:var(--paper);
+    border-radius:18px;padding:30px 34px;
+    display:grid;grid-template-columns:repeat(4,1fr);gap:24px;
+  }
+  @media(max-width:860px){.studio-strip{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:520px){.studio-strip{grid-template-columns:1fr}}
+  .s-item .s-ico{font-size:1.7rem;display:block;margin-bottom:10px}
+  .s-item b{font-family:var(--display);font-weight:750;font-size:1.1rem;display:block;color:#fff;margin-bottom:6px}
+  .s-item span.s-desc{font-size:.85rem;color:#D7E6DB;line-height:1.5;display:block}
+
+  /* ---------- game blocks ---------- */
+  .game-block{margin-top:48px}
+  .game-label{
+    font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.04em;
+    display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;
+  }
+  .game-label .sample-badge{
+    background:var(--ink);color:var(--mango);border-radius:8px;
+    padding:5px 12px;font-size:11px;letter-spacing:.12em;
+  }
+
+  /* ---------- quiz ---------- */
+  .quiz-card{
+    margin-top:52px;background:var(--card);border:2px solid var(--ink);border-radius:18px;
+    padding:34px;max-width:760px;
+    box-shadow:8px 8px 0 rgba(232,68,46,.16);
+  }
+  .quiz-card .q{
+    font-family:var(--display);font-size:1.3rem;font-weight:700;line-height:1.3;margin-bottom:24px;
+  }
+  .opt{
+    display:flex;gap:14px;align-items:flex-start;width:100%;text-align:left;
+    background:var(--paper);border:2px solid var(--line);border-radius:12px;
+    padding:16px 18px;margin-bottom:12px;cursor:pointer;
+    font-family:var(--body);font-size:1rem;color:var(--ink);
+    transition:border-color .15s ease, transform .1s ease;
+  }
+  .opt:hover{border-color:var(--ink);transform:translateX(3px)}
+  .opt .key{
+    font-family:var(--mono);font-weight:600;font-size:13px;
+    border:1.5px solid var(--ink);border-radius:6px;
+    min-width:26px;height:26px;display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .opt.correct{border-color:var(--herb);background:#E7F2EA}
+  .opt.correct .key{background:var(--herb);color:#fff;border-color:var(--herb)}
+  .opt.wrong{border-color:var(--chili);background:#FBEAE7;opacity:.75}
+  .opt.wrong .key{background:var(--chili);color:#fff;border-color:var(--chili)}
+  .opt:disabled{cursor:default}
+  .quiz-fb{
+    display:none;margin-top:18px;font-size:.98rem;
+    border-left:4px solid var(--herb);padding:12px 16px;background:#E7F2EA;border-radius:0 10px 10px 0;
+  }
+  .quiz-fb.show{display:block;animation:fadeUp .4s ease}
+  .quiz-fb.wrong-fb{border-left-color:var(--chili);background:#FBEAE7}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  /* ---------- completion ---------- */
+  .complete{
+    padding:110px 0 90px;border-top:2px solid var(--line);
+  }
+  .cert{
+    background:var(--ink);color:var(--paper);border-radius:22px;
+    padding:56px 48px;position:relative;overflow:hidden;
+  }
+  @media(max-width:640px){.cert{padding:40px 26px}}
+  .cert .badge{
+    width:78px;height:78px;border-radius:50%;
+    background:var(--mango);color:var(--ink);
+    display:flex;align-items:center;justify-content:center;
+    font-size:2rem;font-weight:800;margin-bottom:26px;
+    border:3px solid var(--paper);
+  }
+  .cert h2{color:var(--paper);max-width:20ch}
+  .cert p{color:#C9CEC2;max-width:56ch;margin-top:14px;font-size:1.05rem}
+  .cert .cta-row{display:flex;flex-wrap:wrap;gap:14px;margin-top:36px}
+  .cta{
+    text-decoration:none;font-family:var(--mono);font-size:14px;font-weight:600;
+    padding:15px 26px;border-radius:12px;letter-spacing:.04em;
+    display:inline-flex;align-items:center;gap:10px;
+  }
+  .cta.primary{background:var(--chili);color:#fff;box-shadow:0 4px 0 #B32E1C;transition:transform .12s,box-shadow .12s}
+  .cta.primary:hover{transform:translateY(2px);box-shadow:0 2px 0 #B32E1C}
+  .cta.ghost{border:2px solid var(--paper);color:var(--paper)}
+  .cta.ghost:hover{background:rgba(255,255,255,.08)}
+  .cta.email-text{
+    background:var(--chili);color:#fff;box-shadow:0 4px 0 #B32E1C;
+    cursor:text;user-select:all;-webkit-user-select:all;
+  }
+  .cert .fine{
+    margin-top:34px;font-family:var(--mono);font-size:12px;color:#8B9082;
+    display:flex;flex-wrap:wrap;gap:8px 26px;
+  }
+  .cert .stamp{
+    position:absolute;right:36px;top:36px;
+    font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    border:2px solid var(--mango);color:var(--mango);
+    padding:8px 14px;border-radius:8px;transform:rotate(6deg);
+  }
+  @media(max-width:640px){.cert .stamp{display:none}}
+
+  footer{
+    padding:26px 0 40px;font-family:var(--mono);font-size:12px;color:#6B7062;
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
+  }
+</style>
+</head>
+<body>
+
+<div class="lms-bar" aria-hidden="true">
+  <div class="who">CRYSTAL RAYS <span class="role">· L&amp;D / eLEARNING</span></div>
+  <div class="lms-track"><div class="lms-fill" id="fill"></div></div>
+  <div class="lms-pct"><span id="pct">0%</span> <span class="done-flag" id="doneFlag">✓ COMPLETE</span></div>
+</div>
+
+<main>
+  <div class="wrap">
+
+    <!-- HERO -->
+    <header class="hero">
+      <div class="eyebrow">Self-paced module · 10 to 15 min, games included · mobile friendly</div>
+      <h1>Learning that frontline teams <span class="finish">actually finish.</span></h1>
+      <p class="lede">I'm Crystal, an L&amp;D specialist who takes training from storyboard to shipped course and produces every frame of it myself. This portfolio works the way my modules do: scroll to progress, finish to unlock my contact details. (They're at the bottom either way. I'm not a monster.)</p>
+      <div class="meta-row">
+        <span class="chip">Instructional design</span>
+        <span class="chip">eLearning production</span>
+        <span class="chip">Video · animation · graphics</span>
+        <span class="chip">Melbourne, VIC</span>
+      </div>
+      <a class="start-btn" href="#intro-video">START MODULE <span class="arrow">↓</span></a>
+
+      <div class="storyboard" aria-hidden="true">
+        <div class="frame"><div class="screen">SCENE 01 · HOOK</div>storyboard_v3_FINAL.pdf</div>
+        <div class="frame"><div class="screen">SCENE 02 · DEMO</div>filmed in-store, edited in-house</div>
+        <div class="frame"><div class="screen">SCENE 03 · PRACTICE</div>built in Rise 360 · ships mobile-first</div>
+      </div>
+    </header>
+
+    <!-- INTRO VIDEO -->
+    <section class="lesson" id="intro-video">
+      <div class="reveal">
+        <div class="lesson-tag"><span class="dot"></span>Intro · Watch first</div>
+        <h2>Meet me in 60 seconds.</h2>
+        <p class="sub">Made the way I make training video: scripted, produced and published by me, with an AI presenter built in Synthesia.</p>
+      </div>
+      <div class="video-shell reveal">
+        <div class="video-inner">
+          <iframe src="https://share.synthesia.io/embeds/videos/574d18c4-5b9e-46b0-a55e-031691083f6d" loading="lazy" title="Synthesia video player - Sample - Introductory Videos" allowfullscreen allow="encrypted-media; fullscreen; microphone; screen-wake-lock;"></iframe>
+        </div>
+      </div>
+      <div class="video-caption"><span>🎬</span><span>60 sec · scripted, produced &amp; published in-house</span></div>
+    </section>
+
+    <!-- LESSON 1 -->
+    <section class="lesson" id="lesson1">
+      <div class="reveal">
+        <div class="lesson-tag"><span class="dot"></span>Lesson 01 · The build</div>
+        <h2>One person. The whole pipeline.</h2>
+        <p class="sub">Most L&amp;D projects stall in handoffs: to a videographer, an animator, a graphic designer. Mine don't, because there's no one to hand off to. Every stage below is me.</p>
+      </div>
+      <div class="pipeline reveal">
+        <div class="step"><span class="glyph">✏️</span><span class="num">STAGE 1</span><h3>Storyboard</h3><p>Concept, structure and script, designed around a time-poor learner on a restaurant floor, not a classroom.</p></div>
+        <div class="step"><span class="glyph">⚡</span><span class="num">STAGE 2</span><h3>Script, faster</h3><p>AI tools used daily to speed up scripting, content generation and iteration. Build time drops. Quality doesn't.</p></div>
+        <div class="step"><span class="glyph">🎬</span><span class="num">STAGE 3</span><h3>Film &amp; animate</h3><p>Video shot and edited in-house, plus animation and motion graphics built from scratch.</p></div>
+        <div class="step"><span class="glyph">🧩</span><span class="num">STAGE 4</span><h3>Author</h3><p>Built into finished modules in Articulate Rise 360, Adobe Captivate and Canva. Mobile-friendly by default.</p></div>
+        <div class="step"><span class="glyph">🚀</span><span class="num">STAGE 5</span><h3>Ship to the floor</h3><p>Rolled out nationally across a multi-site QSR workforce, with field insight looping straight back into the next build.</p></div>
+      </div>
+      <div class="pipeline-note reveal">💡 This is my day-to-day at Roll'd Australia, a national quick-service restaurant brand.</div>
+    </section>
+
+    <!-- LESSON 2 -->
+    <section class="lesson" id="lesson2">
+      <div class="reveal">
+        <div class="lesson-tag"><span class="dot"></span>Lesson 02 · The floor</div>
+        <h2>I design for mid-shift, because I've worked mid-shift.</h2>
+        <p class="sub">Before L&amp;D, I spent a decade training and leading retail and hospitality teams across Australia and Southeast Asia. Learning has to land in the restaurant, or it hasn't landed at all.</p>
+      </div>
+
+      <div class="floor-strip reveal">
+        <div class="stat"><b>9.5+ yrs</b><span>at Roll'd, floor to national L&amp;D</span></div>
+        <div class="stat"><b>6 markets</b><span>store openings across AU &amp; Southeast Asia</span></div>
+        <div class="stat"><b>3 languages</b><span>English · Mandarin · Bahasa</span></div>
+      </div>
+
+      <div class="xp reveal">
+        <div class="xp-item">
+          <div class="xp-when">2023 — now</div>
+          <div>
+            <div class="xp-role">Learning &amp; Development Specialist <span class="xp-badge">CURRENT</span></div>
+            <div class="xp-org">Roll'd Australia</div>
+            <p>Design, build and produce eLearning and training multimedia for a national, multi-site QSR workforce. Onboarding and upskilling programs built around frontline realities, not classroom assumptions.</p>
+          </div>
+        </div>
+        <div class="xp-item">
+          <div class="xp-when">2022 — now</div>
+          <div>
+            <div class="xp-role">Field Trainer</div>
+            <div class="xp-org">Roll'd Australia</div>
+            <p>Hands-on, in-store training for frontline teams and new-store openings across states, feeding field insight straight back into eLearning design.</p>
+          </div>
+        </div>
+        <div class="xp-item">
+          <div class="xp-when">2017 — 2022</div>
+          <div>
+            <div class="xp-role">Store Manager</div>
+            <div class="xp-org">Roll'd Australia · Melbourne</div>
+            <p>Led team development and training, supported interstate branch set-ups (VIC, QLD), and owned operational standards and customer experience.</p>
+          </div>
+        </div>
+        <div class="xp-item">
+          <div class="xp-when">2012 — 2016</div>
+          <div>
+            <div class="xp-role">Visual Merchandising Manager</div>
+            <div class="xp-org">Cotton On Group · Asia Pacific</div>
+            <p>Led the Asia VM team across Malaysia, Thailand, Hong Kong, Singapore and the Philippines. Trained retail operations and field VM teams every season and managed the SEA planogram.</p>
+          </div>
+        </div>
+        <div class="xp-item">
+          <div class="xp-when">2010 — 2012</div>
+          <div>
+            <div class="xp-role">Senior Field Visual Merchandiser</div>
+            <div class="xp-org">Cotton On Group · Southeast Asia</div>
+            <p>New store set-ups across Singapore, Malaysia and Thailand, where training on-site and at pace became a habit.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LESSON 3 -->
+    <section class="lesson" id="lesson3">
+      <div class="reveal">
+        <div class="lesson-tag"><span class="dot"></span>Lesson 03 · The toolkit</div>
+        <h2>The craft side comes standard.</h2>
+        <p class="sub">My background is in visual and product design, including work for Disney licensees, so turning a rough idea into clear, well-designed, genuinely engaging content is the part I love most.</p>
+      </div>
+      <div class="studio-strip reveal">
+        <div class="s-item"><span class="s-ico">🎥</span><b>Film &amp; edit</b><span class="s-desc">Shot on location, edited in-house, publish-ready video.</span></div>
+        <div class="s-item"><span class="s-ico">🧑‍🎨</span><b>Avatar design</b><span class="s-desc">Custom characters and AI presenter avatars for eLearning.</span></div>
+        <div class="s-item"><span class="s-ico">✒️</span><b>Logo &amp; identity</b><span class="s-desc">Logos, brand marks and visual systems for learning programs.</span></div>
+        <div class="s-item"><span class="s-ico">✨</span><b>Animate</b><span class="s-desc">Animation and motion graphics, frame one to final.</span></div>
+      </div>
+      <div class="kit reveal">
+        <div class="kit-card">
+          <h3>Authoring &amp; systems</h3>
+          <div class="tags"><span class="tag">Articulate Rise 360</span><span class="tag">Adobe Captivate</span><span class="tag">Canva</span><span class="tag">Any LMS</span></div>
+          <p class="note">Fast on new systems. Whatever LMS or platform you run, I pick it up quickly and get content live.</p>
+        </div>
+        <div class="kit-card">
+          <h3>Design &amp; media</h3>
+          <div class="tags"><span class="tag">Filming</span><span class="tag">Video editing</span><span class="tag">Avatar design</span><span class="tag">Logo design</span><span class="tag">Animation</span><span class="tag">Motion graphics</span><span class="tag">Photoshop</span><span class="tag">Illustrator</span><span class="tag">InDesign</span></div>
+          <p class="note">All multimedia produced in-house. No external production needed.</p>
+        </div>
+        <div class="kit-card">
+          <h3>Acceleration</h3>
+          <div class="tags"><span class="tag">AI-assisted scripting</span><span class="tag">Content generation</span><span class="tag">Rapid iteration</span></div>
+          <p class="note">Used daily to cut build time without dropping quality. Genuinely curious about where AI takes learning design next.</p>
+        </div>
+        <div class="kit-card">
+          <h3>Foundations</h3>
+          <div class="tags"><span class="tag">Lasalle College of the Arts — Fashion &amp; Multimedia Design</span><span class="tag">Singapore Retail Academy — Visual Merchandising</span><span class="tag">MS Office</span></div>
+          <p class="note">Languages: English &amp; Mandarin (spoken and written), Bahasa (spoken).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- LESSON 4: PLAY A SAMPLE -->
+    <section class="lesson" id="lesson4">
+      <div class="reveal">
+        <div class="lesson-tag"><span class="dot"></span>Lesson 04 · Play a sample</div>
+        <h2>Don't take my word for it. Play something I built.</h2>
+        <p class="sub">Two playable samples, two industries, two mechanics. Run the Rush is a leadership scenario game for a made-up QSR. Site Check is a hazard-spotting safety game for a made-up trades company. Both concepted, illustrated, written and built by me. Have a crack.</p>
+      </div>
+      <div class="game-block reveal">
+        <div class="game-label"><span class="sample-badge">SAMPLE 01</span><span>🐦 Run the Rush · leadership &amp; teamwork · QSR</span></div>
+        <div class="game-shell">
+          <iframe id="game-rush" title="Run the Rush, an interactive shift leadership training game" srcdoc="<!DOCTYPE html>
+<html lang=&quot;en&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;>
+<title>Run the Rush — Kookaburra Kitchen Shift Leader Training</title>
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot;>
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin>
+<link href=&quot;https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&amp;family=Nunito+Sans:ital,opsz,wght@0,6..12,400..800;1,6..12,400..800&amp;display=swap&quot; rel=&quot;stylesheet&quot;>
+<style>
+  :root{
+    --ink:#26221C;
+    --base:#FFF6E3;
+    --card:#FFFFFF;
+    --sun:#FFB020;
+    --gum:#2E6E4E;
+    --flame:#E4572E;
+    --sky:#2D7DD2;
+    --line:#EAD9B8;
+    --display:'Baloo 2', cursive;
+    --body:'Nunito Sans', sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation:none!important;transition:none!important}
+  }
+  body{
+    background:var(--base);
+    background-image:radial-gradient(var(--line) 1.2px, transparent 1.2px);
+    background-size:26px 26px;
+    color:var(--ink);
+    font-family:var(--body);
+    font-size:17px;line-height:1.55;
+    min-height:100vh;
+    display:flex;flex-direction:column;align-items:center;
+    padding:28px 16px 60px;
+  }
+  :focus-visible{outline:3px solid var(--sky);outline-offset:3px;border-radius:4px}
+  .stage{width:100%;max-width:760px}
+
+  /* header */
+  .brand{
+    display:flex;align-items:center;justify-content:space-between;gap:14px;
+    margin-bottom:22px;flex-wrap:wrap;
+  }
+  .logo{
+    display:flex;align-items:center;gap:12px;
+    font-family:var(--display);font-weight:800;font-size:1.25rem;line-height:1.1;
+  }
+  .logo .mark{
+    width:48px;height:48px;border-radius:14px;background:var(--sun);
+    border:3px solid var(--ink);display:flex;align-items:center;justify-content:center;
+    font-size:1.5rem;box-shadow:3px 3px 0 var(--ink);
+  }
+  .logo small{display:block;font-family:var(--body);font-weight:700;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gum)}
+  .course-chip{
+    font-weight:800;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+    background:var(--gum);color:#fff;padding:8px 14px;border-radius:99px;
+    border:2.5px solid var(--ink);box-shadow:2px 2px 0 var(--ink);
+  }
+
+  /* meters */
+  .meters{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px;
+  }
+  @media(max-width:560px){.meters{grid-template-columns:1fr;gap:8px}}
+  .meter{
+    background:var(--card);border:2.5px solid var(--ink);border-radius:14px;
+    padding:12px 14px;box-shadow:3px 3px 0 var(--ink);
+  }
+  .meter .m-label{
+    display:flex;justify-content:space-between;align-items:center;
+    font-weight:800;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;
+    margin-bottom:8px;
+  }
+  .m-track{height:12px;border-radius:99px;background:var(--base);border:2px solid var(--ink);overflow:hidden}
+  .m-fill{height:100%;border-radius:99px;transition:width .6s cubic-bezier(.34,1.3,.64,1)}
+  .meter[data-m=&quot;morale&quot;] .m-fill{background:var(--flame)}
+  .meter[data-m=&quot;customers&quot;] .m-fill{background:var(--sun)}
+  .meter[data-m=&quot;flow&quot;] .m-fill{background:var(--sky)}
+  .m-delta{font-size:.72rem;font-weight:800;min-height:1em}
+  .m-delta.up{color:var(--gum)}
+  .m-delta.down{color:var(--flame)}
+
+  /* card */
+  .panel{
+    background:var(--card);border:3px solid var(--ink);border-radius:22px;
+    padding:34px;box-shadow:6px 6px 0 var(--ink);
+    animation:pop .4s cubic-bezier(.34,1.4,.64,1);
+  }
+  @keyframes pop{from{opacity:0;transform:scale(.97) translateY(10px)}to{opacity:1;transform:none}}
+  @media(max-width:560px){.panel{padding:24px 20px}}
+
+  .scene-tag{
+    display:inline-flex;align-items:center;gap:8px;
+    font-weight:800;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
+    background:var(--sun);border:2.5px solid var(--ink);border-radius:99px;
+    padding:6px 14px;margin-bottom:18px;box-shadow:2px 2px 0 var(--ink);
+  }
+  h1,h2{font-family:var(--display);font-weight:800;line-height:1.08;letter-spacing:-.01em}
+  h1{font-size:clamp(2.1rem,6vw,3.2rem);margin-bottom:14px}
+  h2{font-size:clamp(1.4rem,4vw,1.9rem);margin-bottom:12px}
+  .panel p.body-text{color:#4E463B;margin-bottom:8px}
+  .scene-setup{
+    background:var(--base);border:2px dashed var(--ink);border-radius:14px;
+    padding:16px 18px;margin:18px 0 22px;font-size:1.02rem;
+  }
+
+  .choices{display:flex;flex-direction:column;gap:12px}
+  .choice{
+    display:flex;gap:14px;align-items:flex-start;text-align:left;width:100%;
+    background:var(--card);border:2.5px solid var(--ink);border-radius:14px;
+    padding:16px 18px;cursor:pointer;
+    font-family:var(--body);font-size:1rem;font-weight:600;color:var(--ink);
+    box-shadow:3px 3px 0 var(--ink);
+    transition:transform .12s ease, box-shadow .12s ease, background .12s ease;
+  }
+  .choice:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink);background:#FFFBF2}
+  .choice:active{transform:translate(1px,1px);box-shadow:2px 2px 0 var(--ink)}
+  .choice .key{
+    font-family:var(--display);font-weight:800;font-size:.95rem;
+    background:var(--ink);color:var(--sun);
+    min-width:30px;height:30px;border-radius:9px;
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+
+  /* feedback */
+  .fb{border-radius:16px;border:2.5px solid var(--ink);padding:20px 22px;margin-top:6px}
+  .fb.best{background:#E9F4EC}
+  .fb.ok{background:#FFF4DA}
+  .fb.poor{background:#FBE9E2}
+  .fb .fb-title{
+    font-family:var(--display);font-weight:800;font-size:1.15rem;
+    display:flex;align-items:center;gap:10px;margin-bottom:8px;
+  }
+  .fb p{color:#4E463B;font-size:.98rem}
+  .fb .coach{
+    margin-top:14px;padding:12px 14px;border-radius:10px;
+    background:rgba(255,255,255,.75);border:2px dashed var(--ink);
+    font-size:.92rem;
+  }
+  .fb .coach b{text-transform:uppercase;letter-spacing:.08em;font-size:.72rem;display:block;margin-bottom:4px;color:var(--gum)}
+
+  .btn{
+    display:inline-flex;align-items:center;gap:10px;
+    font-family:var(--display);font-weight:800;font-size:1.05rem;
+    background:var(--flame);color:#fff;border:3px solid var(--ink);border-radius:14px;
+    padding:13px 28px;cursor:pointer;margin-top:22px;
+    box-shadow:4px 4px 0 var(--ink);
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .btn:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
+  .btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+  .btn.green{background:var(--gum)}
+
+  /* results */
+  .rank-badge{
+    width:96px;height:96px;border-radius:50%;
+    border:3px solid var(--ink);background:var(--sun);
+    display:flex;align-items:center;justify-content:center;
+    font-size:2.6rem;margin:0 auto 18px;box-shadow:4px 4px 0 var(--ink);
+  }
+  .results{text-align:center}
+  .rank-name{font-family:var(--display);font-weight:800;font-size:2rem;margin-bottom:6px}
+  .score-line{font-weight:800;color:var(--gum);margin-bottom:22px}
+  .takeaways{text-align:left;background:var(--base);border:2px dashed var(--ink);border-radius:14px;padding:20px 22px;margin:0 auto 8px;max-width:560px}
+  .takeaways h3{font-family:var(--display);font-size:1.05rem;margin-bottom:10px}
+  .takeaways ul{list-style:none}
+  .takeaways li{padding:6px 0 6px 30px;position:relative;font-size:.95rem;color:#4E463B}
+  .takeaways li::before{content:&quot;🐦&quot;;position:absolute;left:0}
+
+  .kook-laugh{
+    position:fixed;pointer-events:none;font-family:var(--display);font-weight:800;
+    color:var(--flame);z-index:99;animation:flyUp 1.4s ease forwards;
+  }
+  @keyframes flyUp{0%{opacity:0;transform:translateY(0) rotate(-6deg)}20%{opacity:1}100%{opacity:0;transform:translateY(-90px) rotate(6deg)}}
+
+  footer.credit{
+    margin-top:26px;font-size:.75rem;font-weight:700;letter-spacing:.06em;
+    text-transform:uppercase;color:#8A7E6A;text-align:center;
+  }
+  .hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class=&quot;stage&quot;>
+
+  <div class=&quot;brand&quot;>
+    <div class=&quot;logo&quot;>
+      <div class=&quot;mark&quot;>🐦</div>
+      <div>Kookaburra Kitchen<small>Fictional QSR · Training demo</small></div>
+    </div>
+    <div class=&quot;course-chip&quot; id=&quot;progressChip&quot;>Shift Leader Series · 01</div>
+  </div>
+
+  <div class=&quot;meters hidden&quot; id=&quot;meters&quot;>
+    <div class=&quot;meter&quot; data-m=&quot;morale&quot;>
+      <div class=&quot;m-label&quot;><span>🔥 Team morale</span><span class=&quot;m-delta&quot; id=&quot;d-morale&quot;></span></div>
+      <div class=&quot;m-track&quot;><div class=&quot;m-fill&quot; id=&quot;f-morale&quot; style=&quot;width:60%&quot;></div></div>
+    </div>
+    <div class=&quot;meter&quot; data-m=&quot;customers&quot;>
+      <div class=&quot;m-label&quot;><span>😊 Happy customers</span><span class=&quot;m-delta&quot; id=&quot;d-customers&quot;></span></div>
+      <div class=&quot;m-track&quot;><div class=&quot;m-fill&quot; id=&quot;f-customers&quot; style=&quot;width:60%&quot;></div></div>
+    </div>
+    <div class=&quot;meter&quot; data-m=&quot;flow&quot;>
+      <div class=&quot;m-label&quot;><span>⚡ Shift flow</span><span class=&quot;m-delta&quot; id=&quot;d-flow&quot;></span></div>
+      <div class=&quot;m-track&quot;><div class=&quot;m-fill&quot; id=&quot;f-flow&quot; style=&quot;width:60%&quot;></div></div>
+    </div>
+  </div>
+
+  <div class=&quot;panel&quot; id=&quot;panel&quot;>
+    <!-- rendered by JS -->
+  </div>
+
+  <footer class=&quot;credit&quot;>Kookaburra Kitchen is a made-up brand · Interactive learning demo designed &amp;amp; built by Crystal Rays</footer>
+</div>
+
+<script>
+const scenes = [
+  {
+    tag:&quot;Order 1 of 6 · 11:47am&quot;,
+    title:&quot;Bao is drowning at the register.&quot;,
+    setup:&quot;Bao started Tuesday. The queue is eight deep, he's fumbling the POS, and you can see the panic setting in. Mia is on prep and prep is quiet.&quot;,
+    choices:[
+      {key:&quot;A&quot;, text:&quot;Jump on the register yourself and smash through the queue. Fastest hands win.&quot;,
+        grade:&quot;ok&quot;, d:{morale:-5, customers:+8, flow:+5},
+        fbTitle:&quot;Queue cleared. Problem parked, not solved.&quot;,
+        fb:&quot;The customers are happy, but Bao learned nothing except that the boss takes over when it gets hard. Next rush, you'll be doing this again.&quot;,
+        coach:&quot;Leaders who always rescue create teams that always need rescuing. Fix the system, not just the moment.&quot;},
+      {key:&quot;B&quot;, text:&quot;Call across the floor: \&quot;Bao, mate, pick up the pace, yeah?\&quot;&quot;,
+        grade:&quot;poor&quot;, d:{morale:-15, customers:-5, flow:-5},
+        fbTitle:&quot;Ouch. The whole store heard that.&quot;,
+        fb:&quot;Bao goes redder, gets slower, and three customers are now watching a new kid get called out in public. Nobody wins.&quot;,
+        coach:&quot;Praise in public, coach in private. Public pressure on a learner almost always makes performance worse.&quot;},
+      {key:&quot;C&quot;, text:&quot;Move Mia from quiet prep to open register two, then stand beside Bao and coach him through the next three orders.&quot;,
+        grade:&quot;best&quot;, d:{morale:+12, customers:+10, flow:+10},
+        fbTitle:&quot;Kook-kook-kook! That's shift leadership.&quot;,
+        fb:&quot;The queue splits, Bao gets calm hands-on coaching while it's real, and Mia feels trusted with more. Three wins in one move.&quot;,
+        coach:&quot;Redeploy to the pressure point, then coach in the flow of work. On-the-job coaching beats after-the-fact feedback.&quot;}
+    ]
+  },
+  {
+    tag:&quot;Order 2 of 6 · 12:15pm&quot;,
+    title:&quot;The fryer clean-down feud.&quot;,
+    setup:&quot;Jess and Tom are having a not-so-quiet disagreement about whose turn it is to clean the fryer. It's been simmering all week and the lunch rush is about to peak.&quot;,
+    choices:[
+      {key:&quot;A&quot;, text:&quot;Ignore it. They're adults, they'll sort it out.&quot;,
+        grade:&quot;poor&quot;, d:{morale:-12, customers:-4, flow:-6},
+        fbTitle:&quot;It didn't sort itself out.&quot;,
+        fb:&quot;Small frictions compound. By Friday they're avoiding each other's stations and the whole line feels it.&quot;,
+        coach:&quot;Conflict you can hear, the team can feel. Unaddressed friction taxes everyone's shift, not just theirs.&quot;},
+      {key:&quot;B&quot;, text:&quot;Tell Jess to just do it. She complains less.&quot;,
+        grade:&quot;ok&quot;, d:{morale:-8, customers:0, flow:+4},
+        fbTitle:&quot;Fryer's clean. Fairness isn't.&quot;,
+        fb:&quot;You rewarded the louder voice and taught Jess that being easy-going gets you the worst jobs. She'll remember.&quot;,
+        coach:&quot;Assigning work based on who pushes back least feels efficient and quietly erodes trust. Fair beats fast.&quot;},
+      {key:&quot;C&quot;, text:&quot;Pull them both aside for 60 seconds, hear each out, and set a rotating clean-down roster on the spot.&quot;,
+        grade:&quot;best&quot;, d:{morale:+12, customers:+4, flow:+6},
+        fbTitle:&quot;One minute, one system, zero feud.&quot;,
+        fb:&quot;Both feel heard, the roster removes the argument forever, and you're back on the pass before the rush peaks.&quot;,
+        coach:&quot;Good leaders replace recurring arguments with systems. If the same conflict keeps happening, the fix is structural.&quot;}
+    ]
+  },
+  {
+    tag:&quot;Order 3 of 6 · 12:38pm&quot;,
+    title:&quot;The order screen just died.&quot;,
+    setup:&quot;Peak rush. The kitchen display goes black mid-order. Twelve tickets are somewhere in the void and the team is looking at you.&quot;,
+    choices:[
+      {key:&quot;A&quot;, text:&quot;Take a breath, then assign roles in 30 seconds: paper dockets at the till, Tom calls orders, you run the pass.&quot;,
+        grade:&quot;best&quot;, d:{morale:+10, customers:+8, flow:+12},
+        fbTitle:&quot;Calm is contagious. So is panic. You picked calm.&quot;,
+        fb:&quot;The team snaps into the backup plan because you gave everyone one clear job. Customers barely notice.&quot;,
+        coach:&quot;In a crisis, the team mirrors the leader's state. Clear roles plus a calm voice beats heroics every time.&quot;},
+      {key:&quot;B&quot;, text:&quot;Start shouting orders from memory across the kitchen.&quot;,
+        grade:&quot;poor&quot;, d:{morale:-10, customers:-12, flow:-10},
+        fbTitle:&quot;Chaos, with extra volume.&quot;,
+        fb:&quot;Two wrong burgers, one missed allergy note, and a team that's now more scared of you than the outage.&quot;,
+        coach:&quot;Noise is not direction. Under pressure, people need clarity about their one job, not a louder soundtrack.&quot;},
+      {key:&quot;C&quot;, text:&quot;Ring the area manager and pause new orders until someone tells you what to do.&quot;,
+        grade:&quot;ok&quot;, d:{morale:-4, customers:-10, flow:-8},
+        fbTitle:&quot;Safe, slow, and the queue walked out.&quot;,
+        fb:&quot;Escalating isn't wrong, but freezing the store for 15 minutes cost you the lunch trade. You had a paper backup all along.&quot;,
+        coach:&quot;Escalate the problem, not the decision. Own what's inside your control while help is on the way.&quot;}
+    ]
+  },
+  {
+    tag:&quot;Order 4 of 6 · 1:05pm&quot;,
+    title:&quot;Priya has an idea. Mid-rush.&quot;,
+    setup:&quot;Priya, on packing, reckons swapping the bag and napkin stations would save five seconds per order. She's telling you this while the docket printer sings.&quot;,
+    choices:[
+      {key:&quot;A&quot;, text:&quot;\&quot;Not now, Priya. Rush first, ideas later.\&quot; (Later never comes.)&quot;,
+        grade:&quot;poor&quot;, d:{morale:-10, customers:0, flow:-4},
+        fbTitle:&quot;Idea shelved. Probably forever.&quot;,
+        fb:&quot;Priya won't offer the next one. Neither will anyone who watched. Your improvement pipeline just quietly closed.&quot;,
+        coach:&quot;Every dismissed idea teaches the team to stop thinking. Psychological safety is built or broken in tiny moments like this.&quot;},
+      {key:&quot;B&quot;, text:&quot;Trial it on one station right now, and if it works, credit Priya by name at the afternoon huddle.&quot;,
+        grade:&quot;best&quot;, d:{morale:+14, customers:+4, flow:+8},
+        fbTitle:&quot;Kook-kook-kook! Five seconds an order, and a team that thinks.&quot;,
+        fb:&quot;It works. Priya beams at the huddle, and two other team members mention ideas they've been sitting on.&quot;,
+        coach:&quot;Test small, credit loudly. Recognition by name turns one improver into a culture of improvers.&quot;},
+      {key:&quot;C&quot;, text:&quot;Nod, quietly rearrange the station yourself later, and mention \&quot;a layout change\&quot; at the huddle.&quot;,
+        grade:&quot;ok&quot;, d:{morale:-6, customers:+4, flow:+6},
+        fbTitle:&quot;The layout improved. The trust didn't.&quot;,
+        fb:&quot;Priya notices her idea shipped without her name on it. The efficiency gain is real, and so is the lesson she just learned about sharing ideas with you.&quot;,
+        coach:&quot;Taking quiet credit is the fastest way to make a team go quiet. The idea and the credit travel together.&quot;}
+    ]
+  },
+  {
+    tag:&quot;Order 5 of 6 · 1:30pm&quot;,
+    title:&quot;A customer erupts. Your junior freezes.&quot;,
+    setup:&quot;An order came out wrong and a customer is loudly unhappy. Sam, sixteen and three shifts in, is frozen at the counter with the look of someone who'd rather be anywhere else.&quot;,
+    choices:[
+      {key:&quot;A&quot;, text:&quot;Step in beside Sam, resolve it warmly while he watches, then debrief with him for two minutes once it's calm.&quot;,
+        grade:&quot;best&quot;, d:{morale:+12, customers:+12, flow:+4},
+        fbTitle:&quot;Handled, and taught. Both.&quot;,
+        fb:&quot;Customer leaves happy. Sam just watched a masterclass and then got to talk it through while it was fresh. He'll handle the next one.&quot;,
+        coach:&quot;Model, then debrief. Shielding juniors from hard moments forever keeps them junior forever. Show, explain, hand over.&quot;},
+      {key:&quot;B&quot;, text:&quot;Send Sam to the back and deal with it alone. He's not ready for this.&quot;,
+        grade:&quot;ok&quot;, d:{morale:0, customers:+10, flow:+2},
+        fbTitle:&quot;Customer sorted. Sam learned nothing.&quot;,
+        fb:&quot;The moment passed and so did the teaching opportunity. Sam is still just as unready as he was ten minutes ago.&quot;,
+        coach:&quot;Protecting people from every hard moment is a kindness that keeps them from growing. Bring them alongside instead.&quot;},
+      {key:&quot;C&quot;, text:&quot;Tell Sam it's his to handle. \&quot;Harden up, this is the job.\&quot;&quot;,
+        grade:&quot;poor&quot;, d:{morale:-12, customers:-10, flow:-4},
+        fbTitle:&quot;That's not a deep end. That's a shark tank.&quot;,
+        fb:&quot;Sam fumbles it, the customer gets angrier, and Sam texts his mum on break about quitting.&quot;,
+        coach:&quot;Stretch assignments need support. Throwing untrained people at angry customers isn't toughening, it's turnover.&quot;}
+    ]
+  },
+  {
+    tag:&quot;Order 6 of 6 · 2:20pm&quot;,
+    title:&quot;Rush over. The team smashed it.&quot;,
+    setup:&quot;Record lunch trade, zero refunds, and the kitchen is somehow still standing. The team is wiped but buzzing. What now?&quot;,
+    choices:[
+      {key:&quot;A&quot;, text:&quot;Two-minute huddle: name three specific great moments, one thing to tighten tomorrow, first round of frozen Cokes on you.&quot;,
+        grade:&quot;best&quot;, d:{morale:+15, customers:+2, flow:+6},
+        fbTitle:&quot;Kook-kook-kook! That's how you end a shift.&quot;,
+        fb:&quot;Specific praise lands ten times harder than \&quot;good job everyone.\&quot; The team walks out proud and knows exactly what great looks like.&quot;,
+        coach:&quot;Recognition works when it's specific, immediate, and honest. Celebrate the win, name the behaviours, keep one eye on tomorrow.&quot;},
+      {key:&quot;B&quot;, text:&quot;Say nothing. Good shifts are just the job.&quot;,
+        grade:&quot;poor&quot;, d:{morale:-10, customers:0, flow:0},
+        fbTitle:&quot;The silence said plenty.&quot;,
+        fb:&quot;The team notices that great effort and average effort get the same response. Guess which one they'll bring tomorrow.&quot;,
+        coach:&quot;What gets recognised gets repeated. Unnoticed excellence quietly downgrades itself to whatever's easiest.&quot;},
+      {key:&quot;C&quot;, text:&quot;Book a 45-minute formal review meeting for Thursday to analyse the shift properly.&quot;,
+        grade:&quot;ok&quot;, d:{morale:-4, customers:0, flow:-2},
+        fbTitle:&quot;Right instinct. Wrong format.&quot;,
+        fb:&quot;By Thursday the buzz is gone and the details are fuzzy. The team hears \&quot;meeting\&quot; and their eyes glaze.&quot;,
+        coach:&quot;Feedback has a half-life. On a restaurant floor, two minutes now beats forty-five minutes later.&quot;}
+    ]
+  }
+];
+
+const state = { i:0, morale:60, customers:60, flow:60, best:0 };
+const panel = document.getElementById('panel');
+const meters = document.getElementById('meters');
+const chip = document.getElementById('progressChip');
+
+function clamp(v){ return Math.max(5, Math.min(100, v)); }
+
+function setMeters(deltas){
+  ['morale','customers','flow'].forEach(k=>{
+    document.getElementById('f-'+k).style.width = state[k] + '%';
+    const d = document.getElementById('d-'+k);
+    if(deltas &amp;&amp; deltas[k]){
+      d.textContent = (deltas[k]>0?'+':'') + deltas[k];
+      d.className = 'm-delta ' + (deltas[k]>0?'up':'down');
+    } else {
+      d.textContent = ''; d.className = 'm-delta';
+    }
+  });
+}
+
+function laugh(x,y){
+  const el = document.createElement('div');
+  el.className = 'kook-laugh';
+  el.textContent = 'kook-kook-kook!';
+  el.style.left = (x-40)+'px'; el.style.top = (y-20)+'px';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),1400);
+}
+
+function renderStart(){
+  meters.classList.add('hidden');
+  chip.textContent = 'Shift Leader Series · 01';
+  panel.innerHTML = `
+    <span class=&quot;scene-tag&quot;>🍟 Scenario game · approx 5 min</span>
+    <h1>Run the Rush</h1>
+    <p class=&quot;body-text&quot;><strong>Saturday. 11:45am. Kookaburra Kitchen, Fitzroy.</strong> You're the shift leader, the footy crowd is inbound, and your team is a mix of gun operators and brand-new starters.</p>
+    <div class=&quot;scene-setup&quot;>Six moments will test your <strong>leadership</strong> and <strong>teamwork</strong> calls. Every choice moves three meters: team morale, happy customers, and shift flow. There are no trick questions, just trade-offs. Like a real shift.</div>
+    <p class=&quot;body-text&quot;>Ready, legend?</p>
+    <button class=&quot;btn&quot; id=&quot;startBtn&quot;>Clock on →</button>
+  `;
+  document.getElementById('startBtn').addEventListener('click', renderScene);
+}
+
+function renderScene(){
+  const s = scenes[state.i];
+  meters.classList.remove('hidden');
+  chip.textContent = `Scenario ${state.i+1} / ${scenes.length}`;
+  setMeters(null);
+  panel.innerHTML = `
+    <span class=&quot;scene-tag&quot;>⏱ ${s.tag}</span>
+    <h2>${s.title}</h2>
+    <div class=&quot;scene-setup&quot;>${s.setup}</div>
+    <div class=&quot;choices&quot;>
+      ${s.choices.map((c,idx)=>`
+        <button class=&quot;choice&quot; data-idx=&quot;${idx}&quot;>
+          <span class=&quot;key&quot;>${c.key}</span><span>${c.text}</span>
+        </button>`).join('')}
+    </div>
+  `;
+  panel.querySelectorAll('.choice').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      const c = s.choices[+btn.dataset.idx];
+      state.morale = clamp(state.morale + c.d.morale);
+      state.customers = clamp(state.customers + c.d.customers);
+      state.flow = clamp(state.flow + c.d.flow);
+      if(c.grade === 'best'){
+        state.best++;
+        const r = btn.getBoundingClientRect();
+        laugh(r.left + r.width/2, r.top);
+      }
+      setMeters(c.d);
+      renderFeedback(c);
+    });
+  });
+}
+
+function renderFeedback(c){
+  const icon = c.grade==='best' ? '🌟' : c.grade==='ok' ? '🤔' : '💥';
+  const last = state.i === scenes.length - 1;
+  panel.innerHTML = `
+    <div class=&quot;fb ${c.grade}&quot;>
+      <div class=&quot;fb-title&quot;>${icon} ${c.fbTitle}</div>
+      <p>${c.fb}</p>
+      <div class=&quot;coach&quot;><b>Coach's note</b>${c.coach}</div>
+    </div>
+    <button class=&quot;btn ${c.grade==='best'?'green':''}&quot; id=&quot;nextBtn&quot;>${last ? 'Finish the shift →' : 'Next order →'}</button>
+  `;
+  document.getElementById('nextBtn').addEventListener('click', ()=>{
+    state.i++;
+    if(state.i < scenes.length) renderScene();
+    else renderResults();
+  });
+}
+
+function renderResults(){
+  const avg = Math.round((state.morale + state.customers + state.flow) / 3);
+  let badge, rank, blurb;
+  if(state.best >= 5 &amp;&amp; avg >= 75){
+    badge='🏆'; rank='Legendary Shift Leader';
+    blurb='The kookaburras are laughing WITH you. Your team is coached, credited, calm under pressure, and already better than they were this morning.';
+  } else if(state.best >= 3 || avg >= 60){
+    badge='🐦'; rank='Solid Skipper';
+    blurb='Strong shift. You kept the wheels on and made some genuinely good calls. A couple of moments went to speed over growth. Worth a rerun.';
+  } else {
+    badge='🍟'; rank='Learning the Ropes';
+    blurb='The rush won this round, but that is exactly what practice runs are for. Have another crack and watch what happens when you coach instead of rescue.';
+  }
+  meters.classList.remove('hidden');
+  setMeters(null);
+  chip.textContent = 'Shift complete';
+  panel.innerHTML = `
+    <div class=&quot;results&quot;>
+      <div class=&quot;rank-badge&quot;>${badge}</div>
+      <div class=&quot;rank-name&quot;>${rank}</div>
+      <div class=&quot;score-line&quot;>Best-call decisions: ${state.best}/6 · Shift score: ${avg}%</div>
+      <div class=&quot;takeaways&quot;>
+        <h3>What great shift leaders did today</h3>
+        <ul>
+          <li>Coached in the flow of work instead of rescuing or blaming.</li>
+          <li>Replaced recurring arguments with fair, simple systems.</li>
+          <li>Stayed calm and gave everyone one clear job in a crisis.</li>
+          <li>Tested team ideas fast and gave credit by name.</li>
+          <li>Modelled tough moments, then debriefed while they were fresh.</li>
+          <li>Ended the shift with specific, immediate recognition.</li>
+        </ul>
+      </div>
+      <button class=&quot;btn&quot; id=&quot;replayBtn&quot;>🔁 Run it again</button>
+    </div>
+  `;
+  document.getElementById('replayBtn').addEventListener('click', ()=>{
+    state.i=0; state.morale=60; state.customers=60; state.flow=60; state.best=0;
+    renderStart();
+  });
+}
+
+renderStart();
+</script>
+</body>
+</html>
+"></iframe>
+        </div>
+      </div>
+      <div class="game-block reveal">
+        <div class="game-label"><span class="sample-badge">SAMPLE 02</span><span>🔧 Site Check · workplace safety · trades</span></div>
+        <div class="game-shell">
+          <iframe id="game-site" title="Site Check, an interactive hazard spotting safety game" srcdoc="<!DOCTYPE html>
+<html lang=&quot;en&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;>
+<title>Site Check — Ironbark Trade Services Toolbox Safety Challenge</title>
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot;>
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin>
+<link href=&quot;https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&amp;family=Public+Sans:ital,wght@0,400..800;1,400..800&amp;display=swap&quot; rel=&quot;stylesheet&quot;>
+<style>
+  :root{
+    --steel:#233746;
+    --base:#EDF1F4;
+    --card:#FFFFFF;
+    --hiviz:#FF7A1A;
+    --yellow:#FFD23F;
+    --safe:#2F9E63;
+    --danger:#D93F2B;
+    --line:#D2DBE2;
+    --display:'Archivo', sans-serif;
+    --body:'Public Sans', sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation:none!important;transition:none!important}
+  }
+  body{
+    background:var(--base);
+    background-image:linear-gradient(45deg, transparent 48%, #E2E8ED 48%, #E2E8ED 52%, transparent 52%);
+    background-size:34px 34px;
+    color:var(--steel);
+    font-family:var(--body);font-size:16.5px;line-height:1.55;
+    min-height:100vh;display:flex;flex-direction:column;align-items:center;
+    padding:28px 16px 60px;
+  }
+  :focus-visible{outline:3px solid var(--hiviz);outline-offset:3px;border-radius:4px}
+  .stage{width:100%;max-width:860px}
+
+  /* header */
+  .brand{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:20px;flex-wrap:wrap}
+  .logo{display:flex;align-items:center;gap:12px;font-family:var(--display);font-weight:900;font-size:1.2rem;line-height:1.1;text-transform:uppercase;letter-spacing:.02em}
+  .logo .mark{
+    width:48px;height:48px;background:var(--hiviz);
+    border:3px solid var(--steel);display:flex;align-items:center;justify-content:center;
+    font-size:1.4rem;box-shadow:3px 3px 0 var(--steel);
+    clip-path:polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  }
+  .logo small{display:block;font-family:var(--body);font-weight:700;font-size:.62rem;letter-spacing:.16em;color:#5B7183;text-transform:uppercase}
+  .hud{display:flex;gap:10px;flex-wrap:wrap}
+  .hud-chip{
+    font-family:var(--display);font-weight:800;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;
+    background:var(--steel);color:#fff;padding:9px 15px;
+    border:2.5px solid var(--steel);box-shadow:2px 2px 0 rgba(35,55,70,.35);
+  }
+  .hud-chip.warn{background:var(--yellow);color:var(--steel)}
+
+  /* panel */
+  .panel{
+    background:var(--card);border:3px solid var(--steel);
+    padding:30px;box-shadow:7px 7px 0 var(--steel);
+    animation:pop .35s ease;
+  }
+  @keyframes pop{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @media(max-width:560px){.panel{padding:20px 16px}}
+  .stripe-tag{
+    display:inline-block;font-family:var(--display);font-weight:800;font-size:.72rem;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--steel);
+    background:repeating-linear-gradient(45deg,var(--yellow),var(--yellow) 10px,#F3B900 10px,#F3B900 20px);
+    border:2.5px solid var(--steel);padding:7px 14px;margin-bottom:16px;
+  }
+  h1,h2{font-family:var(--display);font-weight:900;line-height:1.05;text-transform:uppercase;letter-spacing:-.005em}
+  h1{font-size:clamp(2rem,5.6vw,2.9rem);margin-bottom:12px}
+  h2{font-size:clamp(1.3rem,3.6vw,1.7rem);margin-bottom:10px}
+  p.copy{color:#41586B;margin-bottom:10px}
+  .brief{
+    background:var(--base);border:2px dashed var(--steel);
+    padding:15px 17px;margin:16px 0 20px;font-size:.98rem;
+  }
+  .btn{
+    display:inline-flex;align-items:center;gap:10px;
+    font-family:var(--display);font-weight:800;font-size:1rem;letter-spacing:.04em;text-transform:uppercase;
+    background:var(--hiviz);color:#fff;border:3px solid var(--steel);
+    padding:13px 26px;cursor:pointer;margin-top:16px;
+    box-shadow:4px 4px 0 var(--steel);
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .btn:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--steel)}
+  .btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--steel)}
+  .btn.green{background:var(--safe)}
+
+  /* scene */
+  .scene-wrap{border:3px solid var(--steel);background:#CFE3EE;position:relative}
+  svg{display:block;width:100%;height:auto}
+  .hazard{cursor:pointer}
+  .hazard:hover .hit, .hazard:focus-visible .hit{stroke:var(--hiviz);stroke-width:3;stroke-dasharray:6 5}
+  .hazard.found{cursor:default;pointer-events:none}
+  .hit{fill:transparent;stroke:transparent}
+  .decoy{cursor:pointer}
+
+  .toast{
+    position:absolute;left:50%;top:12px;transform:translateX(-50%);
+    background:var(--steel);color:#fff;font-weight:700;font-size:.85rem;
+    padding:9px 16px;border:2px solid #fff;box-shadow:0 4px 12px rgba(0,0,0,.25);
+    opacity:0;pointer-events:none;transition:opacity .25s ease;max-width:90%;text-align:center;
+  }
+  .toast.show{opacity:1}
+
+  /* info card */
+  .info{
+    margin-top:0;border:3px solid var(--steel);border-top:none;
+    background:var(--card);padding:18px 22px;min-height:118px;
+  }
+  .info .i-title{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:1rem;display:flex;gap:10px;align-items:center;margin-bottom:6px}
+  .info .i-title .pill{font-size:.66rem;letter-spacing:.1em;padding:3px 9px;border:2px solid var(--steel)}
+  .info .i-title .pill.bad{background:var(--danger);color:#fff;border-color:var(--steel)}
+  .info .i-title .pill.good{background:var(--safe);color:#fff}
+  .info p{font-size:.93rem;color:#41586B}
+  .info .fix{margin-top:8px;padding:9px 12px;background:#EAF6EF;border-left:4px solid var(--safe);font-size:.9rem}
+  .info .fix b{text-transform:uppercase;letter-spacing:.08em;font-size:.68rem;display:block;color:var(--safe)}
+
+  /* results */
+  .results{text-align:center}
+  .r-badge{
+    width:92px;height:92px;margin:0 auto 16px;
+    background:var(--yellow);border:3px solid var(--steel);
+    display:flex;align-items:center;justify-content:center;font-size:2.4rem;
+    box-shadow:4px 4px 0 var(--steel);
+    clip-path:polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  }
+  .r-rank{font-family:var(--display);font-weight:900;font-size:1.8rem;text-transform:uppercase;margin-bottom:4px}
+  .r-score{font-weight:800;color:var(--hiviz);margin-bottom:18px}
+  .r-list{text-align:left;max-width:540px;margin:0 auto;border:2px dashed var(--steel);background:var(--base);padding:16px 20px}
+  .r-list h3{font-family:var(--display);font-size:.95rem;text-transform:uppercase;margin-bottom:8px}
+  .r-list li{list-style:none;padding:4px 0;font-size:.92rem;color:#41586B}
+  .r-list li.got::before{content:&quot;✅ &quot;;}
+  .r-list li.missed::before{content:&quot;❌ &quot;;}
+
+  footer.credit{
+    margin-top:24px;font-size:.72rem;font-weight:700;letter-spacing:.1em;
+    text-transform:uppercase;color:#7A8C9A;text-align:center;
+  }
+  .hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class=&quot;stage&quot;>
+
+  <div class=&quot;brand&quot;>
+    <div class=&quot;logo&quot;>
+      <div class=&quot;mark&quot;>🔧</div>
+      <div>Ironbark Trade Services<small>Fictional trades company · Training demo</small></div>
+    </div>
+    <div class=&quot;hud&quot;>
+      <div class=&quot;hud-chip&quot; id=&quot;counterChip&quot;>Hazards 0 / 7</div>
+      <div class=&quot;hud-chip warn&quot; id=&quot;timerChip&quot;>⏱ 90s</div>
+    </div>
+  </div>
+
+  <div class=&quot;panel&quot; id=&quot;startPanel&quot;>
+    <span class=&quot;stripe-tag&quot;>⚠ Toolbox Talk Series · 01</span>
+    <h1>Site Check</h1>
+    <p class=&quot;copy&quot;><strong>Monday, 6:58am.</strong> You're first through the gate at the Ironbark job site, and the crew clocks on in two minutes. Something out there is not right. Seven somethings, actually.</p>
+    <div class=&quot;brief&quot;>Find all <strong>7 safety hazards</strong> in the site scene before the 90 seconds are up. Tap or click anything that looks wrong. Every find comes with the why and the fix, just like a good toolbox talk.</div>
+    <button class=&quot;btn&quot; id=&quot;startBtn&quot;>Open the gate →</button>
+  </div>
+
+  <div id=&quot;gameArea&quot; class=&quot;hidden&quot;>
+    <div class=&quot;scene-wrap&quot;>
+      <div class=&quot;toast&quot; id=&quot;toast&quot;></div>
+      <svg id=&quot;scene&quot; viewBox=&quot;0 0 900 540&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot; aria-label=&quot;Construction site scene with hidden hazards&quot;>
+        <!-- sky &amp; ground -->
+        <rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;900&quot; height=&quot;400&quot; fill=&quot;#CFE3EE&quot;/>
+        <circle cx=&quot;810&quot; cy=&quot;70&quot; r=&quot;34&quot; fill=&quot;#FFD23F&quot;/>
+        <rect x=&quot;0&quot; y=&quot;380&quot; width=&quot;900&quot; height=&quot;160&quot; fill=&quot;#C9B79A&quot;/>
+        <rect x=&quot;0&quot; y=&quot;380&quot; width=&quot;900&quot; height=&quot;10&quot; fill=&quot;#B3A184&quot;/>
+
+        <!-- background site shed -->
+        <rect x=&quot;620&quot; y=&quot;250&quot; width=&quot;180&quot; height=&quot;130&quot; fill=&quot;#8FA6B5&quot; stroke=&quot;#233746&quot; stroke-width=&quot;3&quot;/>
+        <rect x=&quot;620&quot; y=&quot;235&quot; width=&quot;180&quot; height=&quot;20&quot; fill=&quot;#233746&quot;/>
+        <rect x=&quot;690&quot; y=&quot;300&quot; width=&quot;44&quot; height=&quot;80&quot; fill=&quot;#5B7183&quot; stroke=&quot;#233746&quot; stroke-width=&quot;3&quot;/>
+        <text x=&quot;640&quot; y=&quot;282&quot; font-family=&quot;Archivo&quot; font-weight=&quot;800&quot; font-size=&quot;16&quot; fill=&quot;#233746&quot;>SITE OFFICE</text>
+
+        <!-- scaffold -->
+        <g stroke=&quot;#233746&quot; stroke-width=&quot;6&quot; fill=&quot;none&quot;>
+          <line x1=&quot;90&quot; y1=&quot;380&quot; x2=&quot;90&quot; y2=&quot;110&quot;/>
+          <line x1=&quot;290&quot; y1=&quot;380&quot; x2=&quot;290&quot; y2=&quot;110&quot;/>
+          <line x1=&quot;70&quot; y1=&quot;150&quot; x2=&quot;310&quot; y2=&quot;150&quot;/>
+          <line x1=&quot;70&quot; y1=&quot;250&quot; x2=&quot;310&quot; y2=&quot;250&quot;/>
+        </g>
+        <rect x=&quot;70&quot; y=&quot;132&quot; width=&quot;240&quot; height=&quot;14&quot; fill=&quot;#B07C3E&quot; stroke=&quot;#233746&quot; stroke-width=&quot;3&quot;/>
+        <rect x=&quot;70&quot; y=&quot;232&quot; width=&quot;240&quot; height=&quot;14&quot; fill=&quot;#B07C3E&quot; stroke=&quot;#233746&quot; stroke-width=&quot;3&quot;/>
+        <!-- worker with hat on scaffold (decoy) -->
+        <g class=&quot;decoy&quot; tabindex=&quot;0&quot; role=&quot;button&quot; aria-label=&quot;Worker wearing hard hat&quot;>
+          <circle cx=&quot;140&quot; cy=&quot;105&quot; r=&quot;13&quot; fill=&quot;#E8B88A&quot;/>
+          <path d=&quot;M125 103 a15 12 0 0 1 30 0 z&quot; fill=&quot;#FFD23F&quot; stroke=&quot;#233746&quot; stroke-width=&quot;2.5&quot;/>
+          <rect x=&quot;126&quot; y=&quot;117&quot; width=&quot;28&quot; height=&quot;18&quot; fill=&quot;#FF7A1A&quot; stroke=&quot;#233746&quot; stroke-width=&quot;2.5&quot; rx=&quot;3&quot;/>
+        </g>
+
+        <!-- HAZARD: tools on scaffold edge -->
+        <g class=&quot;hazard&quot; id=&quot;hz-tools&quot; tabindex=&quot;0&quot; role=&quot;button&quot; aria-label=&quot;Tools balanced on the scaffold edge&quot;>
+          <rect x=&quot;284&quot; y=&quot;112&quot; width=&quot;34&quot; height=&quot;12&quot; fill=&quot;#8A6B3D&quot; stroke=&quot;#233746&quot; stroke-width=&quot;2.5&quot;/>
+          <rect x=&quot;296&quot; y=&quot;96&quot; width=&quot;8&quot; height=&quot;20&quot; fill=&quot;#B3B9BE&quot; stroke=&quot;#233746&quot; stroke-width=&quot;2&quot; transform=&quot;rotate(18 300 106)&quot;/>
+          <rect x=&quot;290&quot; y=&quot;90&quot; width=&quot;22&quot; height=&quot;9&quot; fill=&quot;#D93F2B&quot; stroke=&quot;#233746&quot; stroke-width=&quot;2&quot; transform=&quot;rotate(18 301 94)&quot;/>
+          <rect class=&quot;hit&quot; x=&quot;274&quot; y=&quot;80&quot; width=&quot;56&quot; height=&quot;52&quot;/>
+        </g>
+
+        <!-- HAZARD: worker without hard hat, below scaffold -->
+        <g class=&quot;hazard&quot; id=&quot;hz-hardhat&quot; tabindex=&quot;0&quot; role=&quot;button&quot; aria-label=&quot;Worker not wearing a hard hat under the scaffold&quot;>
+          <circle cx=&quot;190&quot; cy=&quot;292&quot; r=&quot;15&quot; fill=&quot;#E8B88A&quot;/>
+          <path d=&quot;M177 285 q13 -12 26 0&quot; fill=&quot;none&quot; stroke=&quot;#5B4632&quot; stroke-width=&quot;5&quot;/>
+          <rect x=&quot;173&quot; y=&quot;307&quot; width=&quot;34&quot; height=&quot;42&quot; fill=&quot;#FF7A1A&quot; stroke=&quot;#233746&quot; stroke-width=&quot;3&quot; rx=&quot;4&quot;/>
+          <line x1=&quot;180&quot; y1=&quot;349&quot; x2=&quot;178&quot; y2=&quot;380&quot; stroke=&quot;#233746&quot; stroke-width=&quot;6&quot;/>
+          <line x1=&quot;200&quot; y1=&quot;349&quot; x2=&quot;202&quot; y2=&quot;380&quot; stroke=&quot;#233746&quot; stroke-width=&quot;6&quot;/>
+          <rect class=&quot;hit&quot; x=&quot;163&quot; y=&quot;270&quot; width=&quot;56&quot; height=&quot;115&quot;/>
+        </g>
+
+        <!-- HAZARD: ladder on a crate -->
+        <g class=&quot;hazard&quot; id=&quot;hz-ladder&quot; tabindex=&quot;0&quot; role=&quot;button&quot; aria-label=&quot;Ladder set up on top of a crate&quot;>
+          <rect x=&quot;356&quot; y=&quot;344&quot; width=&quot;52&quot; height=&quot;36&quot; fill=&quot;#B07C3E&quot; stroke=&quot;#233746&quot; stroke-width=&quot;3&quot;/>
+          <line x1=&quot;366&quot; y1=&quot;344&quot; x2=&quot;366&quot; y2=&quot;380&quot; stroke=&quot;#233746&quot; stroke-width=&quot;2&quot;/>
+          <line x1=&quot;396&quot; y1=&quot;344&quot; x2=&quot;396&quot; y2=&quot;380&quot; stroke=&quot;#233746&quot; stroke-width=&quot;2&quot;/>
+          <g stroke=&quot;#233746&quot; stroke-width=&quot;5&quot; fill=&quot;none&quot;>
+            <line x1=&quot;372&quot; y1=&quot;344&quot; x2=&quot;304&quot; y2=&quot;150&quot;/>
+            <line x1=&quot;398&quot; y1=&quot;344&quot; x2=&quot;330&quot; y2=&quot;150&quot;/>
+            <line x1=&quot;358&quot; y1=&quot;310&quot; x2=&quot;384&quot; y2=&quot;310&quot;/>
+            <line x1=&quot;348&quot; y1=&quot;278&quot; x2=&quot;374&quot; y2=&quot;278&quot;/>
+            <line x1=&quot;337&quot; y1=&quot;246&quot; x2=&quot;363&quot; y2=&quot;246&quot;/>
+            <line x1=&quot;326&quot; y1=&quot;214&quot; x2=&quot;352&quot; y2=&quot;214&quot;/>
+            <line x1=&quot;316&quot; y1=&quot;182&quot; x2=&quot;342&quot; y2=&quot;182&quot;/>
+          </g>
+          <rect class=&quot;hit&quot; x=&quot;296&quot; y=&quot;145&quot; width=&quot;120&quot; height=&quot;240&quot;/>
+        </g>
+
+        <!-- HAZARD: unguarded trench with fallen barrier -->
+        <g class=&quot;hazard&quot; id=&quot;hz-trench&quot; tabindex=&quot;0&quot; role=&quot;button&quot; aria-label=&quot;Open trench with the barrier lying on the ground&quot;>
+          <rect x=&quot;440&quot; y=&quot;410&quot; width=&quot;130&quot; height=&quot;62&quot; fill=&quot;#4A3B2A&quot; stroke=&quot;#233746&quot; stroke-width=&quot;3&quot;/>
+          <line x1=&quot;440&quot; y1=&quot;430&quot; x2=&quot;570&quot; y2=&quot;430&quot; stroke=&quot;#332818&quot; stroke-width=&quot;3&quot;/>
+          <line x1=&quot;440&quot; y1=&quot;452&quot; x2=&quot;570&quot; y2=&quot;452&quot; stroke=&quot;#332818&quot; stroke-width=&quot;3&quot;/>
+          <g transform=&quot;rotate(-8 610 480)&quot;>
+            <rect x=&quot;580&quot; y=&quot;472&quot; width=&quot;76&quot; height=&quot;14&quot; fill=&quot;url(#stripes)&quot; stroke=&quot;#233746&quot; stroke-width=&quot;2.5&quot;/>
+            <line x1=&quot;588&quot; y1=&quot;486&quot; x2=&quot;588&quot; y2=&quot;498&quot; stroke=&quot;#233746&quot; stroke-width=&quot;4&quot;/>
+            <line x1=&quot;648&quot; y1=&quot;486&quot; x2=&quot;648&quot; y2=&quot;498&quot; stroke=&quot;#233746&quot; stroke-width=&quot;4&quot;/>
+          </g>
+          <rect class=&quot;hit&quot; x=&quot;432&quot; y=&quot;400&quot; width=&quot;235&quot; height=&quot;105&quot;/>
+        </g>
+
+        <!-- HAZARD: lead through puddle -->
+        <g class=&quot;hazard&quot; id=&quot;hz-cord&quot; tabindex=&quot;0&quot; role=&quot;button&quot; aria-label=&quot;Extension lead running through a puddle across the walkway&quot;>
+          <ellipse cx=&quot;700&quot; cy=&quot;486&quot; rx=&quot;58&quot; ry=&quot;17&quot; fill=&quot;#7FB6D9&quot; stroke=&quot;#233746&quot; stroke-width=&quot;2.5&quot;/>
+          <path d=&quot;M840 440 C 800 455, 760 500, 700 487 S 620 470, 585 500&quot; fill=&quot;none&quot; stroke=&quot;#FF7A1A&quot; stroke-width=&quot;6&quot; stroke-linecap=&quot;round&quot;/>
+          <rect class=&quot;hit&quot; x=&quot;575&quot; y=&quot;455&quot; width=&quot;280&quot; height=&quot;60&quot;/>
+        </g>
+
+        <!-- HAZARD: overloaded powerboard on generator -->
+        <g class=&quot;hazard&quot; id=&quot;hz-power&quot; tabindex=&quot;0&quot; role=&quot;button&quot; aria-label=&quot;Overloaded powerboard with piggybacked plugs&quot;>
+          <rect x=&quot;800&quot; y=&quot;418&quot; width=&quot;72&quot; height=&quot;46&quot; fill=&quot;#8FA6B5&quot; stroke=&quot;#233746&quot; stroke-width=&quot;3&quot;/>
+          <circle cx=&quot;818&quot; cy=&quot;432&quot; r=&quot;5&quot; fill=&quot;#233746&quot;/>
+          <rect x=&quot;806&quot; y=&quot;380&quot; width=&quot;60&quot; height=&quot;24&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#233746&quot; stroke-width=&quot;3&quot;/>
+          <rect x=&quot;812&quot; y=&quot;372&quot; width=&quot;10&quot; height=&quot;12&quot; fill=&quot;#233746&quot;/>
+          <rect x=&quot;826&quot; y=&quot;372&quot; width=&quot;10&quot; height=&quot;12&quot; fill=&quot;#233746&quot;/>
+          <rect x=&quot;840&quot; y=&quot;372&quot; width=&quot;10&quot; height=&quot;12&quot; fill=&quot;#233746&quot;/>
+          <rect x=&quot;838&quot; y=&quot;360&quot; width=&quot;14&quot; height=&quot;14&quot; fill=&quot;#D93F2B&quot; stroke=&quot;#233746&quot; stroke-width=&quot;2&quot;/>
+          <polyline points=&quot;800,366 792,354 802,352 794,340&quot; fill=&quot;none&quot; stroke=&quot;#FFD23F&quot; stroke-width=&quot;4&quot;/>
+          <rect class=&quot;hit&quot; x=&quot;786&quot; y=&quot;336&quot; width=&quot;94&quot; height=&quot;76&quot;/>
+        </g>
+
+        <!-- HAZARD: gas cylinder on its side -->
+        <g class=&quot;hazard&quot; id=&quot;hz-gas&quot; tabindex=&quot;0&quot; role=&quot;button&quot; aria-label=&quot;Gas cylinder lying unsecured on its side&quot;>
+          <rect x=&quot;70&quot; y=&quot;470&quot; width=&quot;96&quot; height=&quot;34&quot; rx=&quot;17&quot; fill=&quot;#FF7A1A&quot; stroke=&quot;#233746&quot; stroke-width=&quot;3&quot;/>
+          <rect x=&quot;160&quot; y=&quot;480&quot; width=&quot;16&quot; height=&quot;14&quot; fill=&quot;#8FA6B5&quot; stroke=&quot;#233746&quot; stroke-width=&quot;2.5&quot;/>
+          <path d=&quot;M60 512 q10 -6 20 0 M52 520 q10 -6 20 0&quot; stroke=&quot;#233746&quot; stroke-width=&quot;2.5&quot; fill=&quot;none&quot;/>
+          <rect class=&quot;hit&quot; x=&quot;44&quot; y=&quot;460&quot; width=&quot;145&quot; height=&quot;66&quot;/>
+        </g>
+
+        <!-- decoys -->
+        <g class=&quot;decoy&quot; tabindex=&quot;0&quot; role=&quot;button&quot; aria-label=&quot;Traffic cone&quot;>
+          <polygon points=&quot;395,505 415,505 409,470 401,470&quot; fill=&quot;#FF7A1A&quot; stroke=&quot;#233746&quot; stroke-width=&quot;2.5&quot;/>
+          <rect x=&quot;388&quot; y=&quot;503&quot; width=&quot;34&quot; height=&quot;7&quot; fill=&quot;#233746&quot;/>
+          <rect x=&quot;399&quot; y=&quot;482&quot; width=&quot;12&quot; height=&quot;6&quot; fill=&quot;#fff&quot;/>
+        </g>
+        <g class=&quot;decoy&quot; tabindex=&quot;0&quot; role=&quot;button&quot; aria-label=&quot;Site safety sign&quot;>
+          <rect x=&quot;18&quot; y=&quot;200&quot; width=&quot;10&quot; height=&quot;180&quot; fill=&quot;#233746&quot;/>
+          <rect x=&quot;0&quot; y=&quot;160&quot; width=&quot;120&quot; height=&quot;52&quot; fill=&quot;#FFD23F&quot; stroke=&quot;#233746&quot; stroke-width=&quot;3&quot;/>
+          <text x=&quot;12&quot; y=&quot;182&quot; font-family=&quot;Archivo&quot; font-weight=&quot;900&quot; font-size=&quot;15&quot; fill=&quot;#233746&quot;>IRONBARK</text>
+          <text x=&quot;12&quot; y=&quot;202&quot; font-family=&quot;Archivo&quot; font-weight=&quot;800&quot; font-size=&quot;12&quot; fill=&quot;#233746&quot;>SAFETY FIRST</text>
+        </g>
+        <g class=&quot;decoy&quot; tabindex=&quot;0&quot; role=&quot;button&quot; aria-label=&quot;Worker wearing full PPE&quot;>
+          <circle cx=&quot;630&quot; cy=&quot;330&quot; r=&quot;13&quot; fill=&quot;#C68863&quot;/>
+          <path d=&quot;M615 328 a15 12 0 0 1 30 0 z&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#233746&quot; stroke-width=&quot;2.5&quot;/>
+          <rect x=&quot;616&quot; y=&quot;342&quot; width=&quot;28&quot; height=&quot;38&quot; fill=&quot;#FFD23F&quot; stroke=&quot;#233746&quot; stroke-width=&quot;2.5&quot; rx=&quot;3&quot;/>
+          <line x1=&quot;622&quot; y1=&quot;380&quot; x2=&quot;621&quot; y2=&quot;404&quot; stroke=&quot;#233746&quot; stroke-width=&quot;5&quot;/>
+          <line x1=&quot;638&quot; y1=&quot;380&quot; x2=&quot;639&quot; y2=&quot;404&quot; stroke=&quot;#233746&quot; stroke-width=&quot;5&quot;/>
+        </g>
+
+        <defs>
+          <pattern id=&quot;stripes&quot; width=&quot;16&quot; height=&quot;14&quot; patternUnits=&quot;userSpaceOnUse&quot;>
+            <rect width=&quot;16&quot; height=&quot;14&quot; fill=&quot;#FFD23F&quot;/>
+            <path d=&quot;M0 14 L14 0 H8 L0 8 Z&quot; fill=&quot;#233746&quot;/>
+          </pattern>
+        </defs>
+      </svg>
+    </div>
+    <div class=&quot;info&quot; id=&quot;info&quot;>
+      <div class=&quot;i-title&quot;><span>👀 Eyes open</span></div>
+      <p>Tap anything on site that doesn't look right. Seven hazards are hiding in plain sight.</p>
+    </div>
+  </div>
+
+  <div class=&quot;panel hidden&quot; id=&quot;resultsPanel&quot;></div>
+
+  <footer class=&quot;credit&quot;>Ironbark Trade Services is a made-up brand · Interactive learning demo designed &amp;amp; built by Crystal Rays</footer>
+</div>
+
+<script>
+const HAZARDS = {
+  &quot;hz-hardhat&quot;: {name:&quot;No hard hat&quot;, why:&quot;He is standing directly under a working scaffold. Anything dropped from up there lands on an unprotected head.&quot;, fix:&quot;Hard hat on before stepping into the work zone. No hat, no start.&quot;},
+  &quot;hz-tools&quot;:   {name:&quot;Tools on the scaffold edge&quot;, why:&quot;That hammer is one bump away from a four-metre drop onto whoever is below.&quot;, fix:&quot;Tools in a bucket or lanyarded. Nothing loose above head height.&quot;},
+  &quot;hz-ladder&quot;:  {name:&quot;Ladder set up on a crate&quot;, why:&quot;An improvised base and a dodgy angle is the classic ladder-fall combination.&quot;, fix:&quot;Feet on firm, level ground at a 4-to-1 angle, tied off at the top.&quot;},
+  &quot;hz-trench&quot;:  {name:&quot;Unguarded trench&quot;, why:&quot;The barrier is flat on the ground and the excavation is wide open on a walkway.&quot;, fix:&quot;Stand the barriers back up. Open edges stay protected at all times.&quot;},
+  &quot;hz-cord&quot;:    {name:&quot;Lead through the puddle&quot;, why:&quot;Electricity and water in the one spot, and a trip hazard right across the path.&quot;, fix:&quot;Reroute the lead up and over, keep it dry, and check the RCD is tested.&quot;},
+  &quot;hz-power&quot;:   {name:&quot;Overloaded powerboard&quot;, why:&quot;Piggybacked plugs stacked on one board is how electrical fires get started.&quot;, fix:&quot;One plug per outlet, rated boards only, and current test tags on everything.&quot;},
+  &quot;hz-gas&quot;:     {name:&quot;Unsecured gas cylinder&quot;, why:&quot;On its side it can roll, leak, or turn into a missile if the valve gets knocked off.&quot;, fix:&quot;Upright, chained to a trolley or rack, valve cap on when not in use.&quot;}
+};
+const TOTAL = 7;
+const TIME_LIMIT = 90;
+
+let found = new Set();
+let timeLeft = TIME_LIMIT;
+let ticker = null;
+let playing = false;
+
+const startPanel = document.getElementById(&quot;startPanel&quot;);
+const gameArea = document.getElementById(&quot;gameArea&quot;);
+const resultsPanel = document.getElementById(&quot;resultsPanel&quot;);
+const counterChip = document.getElementById(&quot;counterChip&quot;);
+const timerChip = document.getElementById(&quot;timerChip&quot;);
+const info = document.getElementById(&quot;info&quot;);
+const toast = document.getElementById(&quot;toast&quot;);
+const scene = document.getElementById(&quot;scene&quot;);
+
+document.getElementById(&quot;startBtn&quot;).addEventListener(&quot;click&quot;, startGame);
+
+function startGame(){
+  found = new Set();
+  timeLeft = TIME_LIMIT;
+  playing = true;
+  startPanel.classList.add(&quot;hidden&quot;);
+  resultsPanel.classList.add(&quot;hidden&quot;);
+  gameArea.classList.remove(&quot;hidden&quot;);
+  document.querySelectorAll(&quot;.found-mark&quot;).forEach(m => m.remove());
+  document.querySelectorAll(&quot;.hazard&quot;).forEach(h => h.classList.remove(&quot;found&quot;));
+  updateHud();
+  info.innerHTML = &quot;<div class='i-title'><span>👀 Eyes open</span></div><p>Tap anything on site that doesn't look right. Seven hazards are hiding in plain sight.</p>&quot;;
+  clearInterval(ticker);
+  ticker = setInterval(() => {
+    timeLeft--;
+    updateHud();
+    if(timeLeft <= 0) endGame(false);
+  }, 1000);
+}
+
+function updateHud(){
+  counterChip.textContent = &quot;Hazards &quot; + found.size + &quot; / &quot; + TOTAL;
+  timerChip.textContent = &quot;⏱ &quot; + timeLeft + &quot;s&quot;;
+  timerChip.style.background = timeLeft <= 15 ? &quot;#D93F2B&quot; : &quot;&quot;;
+  timerChip.style.color = timeLeft <= 15 ? &quot;#fff&quot; : &quot;&quot;;
+}
+
+function markFound(g, color, symbol){
+  const box = g.getBBox();
+  const cx = box.x + box.width / 2;
+  const cy = box.y + box.height / 2;
+  const mark = document.createElementNS(&quot;http://www.w3.org/2000/svg&quot;, &quot;g&quot;);
+  mark.setAttribute(&quot;class&quot;, &quot;found-mark&quot;);
+  mark.innerHTML = &quot;<circle cx='&quot; + cx + &quot;' cy='&quot; + cy + &quot;' r='17' fill='&quot; + color + &quot;' stroke='#fff' stroke-width='3'/>&quot; +
+                   &quot;<text x='&quot; + cx + &quot;' y='&quot; + (cy + 6) + &quot;' text-anchor='middle' font-size='19' font-weight='bold' fill='#fff'>&quot; + symbol + &quot;</text>&quot;;
+  scene.appendChild(mark);
+}
+
+function showToast(msg){
+  toast.textContent = msg;
+  toast.classList.add(&quot;show&quot;);
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => toast.classList.remove(&quot;show&quot;), 1600);
+}
+
+function foundHazard(g){
+  const data = HAZARDS[g.id];
+  found.add(g.id);
+  g.classList.add(&quot;found&quot;);
+  markFound(g, &quot;#2F9E63&quot;, &quot;✓&quot;);
+  info.innerHTML =
+    &quot;<div class='i-title'><span class='pill bad'>Hazard &quot; + found.size + &quot;/&quot; + TOTAL + &quot;</span><span>&quot; + data.name + &quot;</span></div>&quot; +
+    &quot;<p>&quot; + data.why + &quot;</p>&quot; +
+    &quot;<div class='fix'><b>The fix</b>&quot; + data.fix + &quot;</div>&quot;;
+  updateHud();
+  if(found.size === TOTAL) endGame(true);
+}
+
+scene.addEventListener(&quot;click&quot;, (e) => {
+  if(!playing) return;
+  const hz = e.target.closest(&quot;.hazard&quot;);
+  if(hz &amp;&amp; !found.has(hz.id)){ foundHazard(hz); return; }
+  if(e.target.closest(&quot;.decoy&quot;)){ showToast(&quot;No worries there, that one's all good. 👍&quot;); return; }
+  if(!e.target.closest(&quot;.found-mark&quot;)) showToast(&quot;Nothing wrong there. Keep looking.&quot;);
+});
+scene.addEventListener(&quot;keydown&quot;, (e) => {
+  if(!playing) return;
+  if(e.key !== &quot;Enter&quot; &amp;&amp; e.key !== &quot; &quot;) return;
+  const hz = e.target.closest(&quot;.hazard&quot;);
+  if(hz &amp;&amp; !found.has(hz.id)){ e.preventDefault(); foundHazard(hz); }
+  else if(e.target.closest(&quot;.decoy&quot;)){ e.preventDefault(); showToast(&quot;No worries there, that one's all good. 👍&quot;); }
+});
+
+function endGame(win){
+  playing = false;
+  clearInterval(ticker);
+  Object.keys(HAZARDS).forEach(id => {
+    if(!found.has(id)) markFound(document.getElementById(id), &quot;#D93F2B&quot;, &quot;!&quot;);
+  });
+  const n = found.size;
+  let badge, rank, blurb;
+  if(n === TOTAL){
+    badge = &quot;🏆&quot;; rank = &quot;Site Safety Legend&quot;;
+    blurb = &quot;Seven from seven&quot; + (win ? &quot; with &quot; + timeLeft + &quot; seconds to spare&quot; : &quot;&quot;) + &quot;. Nothing gets past you. The crew clocks on to a safe site because you walked it first.&quot;;
+  } else if(n >= 5){
+    badge = &quot;👷&quot;; rank = &quot;Switched On&quot;;
+    blurb = &quot;Sharp eyes. You caught most of it, and the ones you missed are marked in red above. Worth one more walk of the site.&quot;;
+  } else {
+    badge = &quot;🧰&quot;; rank = &quot;Back to the Toolbox Talk&quot;;
+    blurb = &quot;The site got the better of you this round. Check the red markers, have a read of the misses below, and run it again. Hazard spotting is a trained eye, not a talent.&quot;;
+  }
+  const items = Object.keys(HAZARDS).map(id => {
+    const got = found.has(id);
+    return &quot;<li class='&quot; + (got ? &quot;got&quot; : &quot;missed&quot;) + &quot;'><strong>&quot; + HAZARDS[id].name + &quot;:</strong> &quot; + HAZARDS[id].fix + &quot;</li>&quot;;
+  }).join(&quot;&quot;);
+  resultsPanel.innerHTML =
+    &quot;<div class='results'>&quot; +
+      &quot;<div class='r-badge'>&quot; + badge + &quot;</div>&quot; +
+      &quot;<div class='r-rank'>&quot; + rank + &quot;</div>&quot; +
+      &quot;<div class='r-score'>Hazards found: &quot; + n + &quot; / &quot; + TOTAL + &quot;</div>&quot; +
+      &quot;<div class='r-list'><h3>The site check list</h3><ul>&quot; + items + &quot;</ul></div>&quot; +
+      &quot;<button class='btn green' id='replayBtn'>🔁 Walk the site again</button>&quot; +
+    &quot;</div>&quot;;
+  resultsPanel.classList.remove(&quot;hidden&quot;);
+  document.getElementById(&quot;replayBtn&quot;).addEventListener(&quot;click&quot;, startGame);
+  resultsPanel.scrollIntoView({behavior:&quot;smooth&quot;, block:&quot;nearest&quot;});
+}
+</script>
+</body>
+</html>
+"></iframe>
+        </div>
+      </div>
+      <div class="video-caption"><span>🎮</span><span>Both games: concept, instructional design, illustration, copy and build by Crystal Rays</span></div>
+    </section>
+
+    <!-- LESSON 5: QUIZ -->
+    <section class="lesson" id="lesson5">
+      <div class="reveal">
+        <div class="lesson-tag"><span class="dot"></span>Lesson 05 · Knowledge check</div>
+        <h2>Quick check before you finish.</h2>
+        <p class="sub">Every good module has one. Don't worry, it's not graded.</p>
+      </div>
+      <div class="quiz-card reveal" id="quiz">
+        <div class="q">A new menu item launches nationally in four weeks. The team is time-poor, multi-site, and learning mid-shift. What does the training look like?</div>
+        <button class="opt" data-a="wrong"><span class="key">A</span><span>A 40-slide deck and a two-hour classroom session at head office.</span></button>
+        <button class="opt" data-a="right"><span class="key">B</span><span>A mobile-friendly micro-module with video filmed in a real store, built, shot and shipped by one person.</span></button>
+        <button class="opt" data-a="wrong"><span class="key">C</span><span>A laminated A4 poster near the fryer. Good luck, everyone.</span></button>
+        <div class="quiz-fb" id="quizFb"></div>
+      </div>
+    </section>
+
+    <!-- COMPLETION -->
+    <section class="complete" id="complete">
+      <div class="cert reveal">
+        <div class="stamp">Module complete</div>
+        <div class="badge">✓</div>
+        <h2>You finished. My learners usually do too.</h2>
+        <p>If you're building learning for frontline teams and want a designer who covers the full build, storyboard to shipped course with no handoffs, I'd love to show you what I've made.</p>
+        <div class="cta-row">
+          <span class="cta email-text">✉ crystalrays@gmail.com</span>
+          <a class="cta ghost" href="tel:+61405741186">0405 741 186</a>
+        </div>
+        <div class="fine">
+          <span>📍 Melbourne (Camberwell), VIC</span>
+          <span>🗣 EN · 中文 · Bahasa</span>
+          <span>📎 References available on request</span>
+        </div>
+      </div>
+      <footer>
+        <span>© Crystal Rays — Learning &amp; Development</span>
+        <span>Designed like a module. Because everything should be.</span>
+      </footer>
+    </section>
+
+  </div>
+</main>
+
+<script>
+  // scroll progress = module progress
+  const fill = document.getElementById('fill');
+  const pct = document.getElementById('pct');
+  const doneFlag = document.getElementById('doneFlag');
+  function updateProgress(){
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    const p = max > 0 ? Math.min(100, Math.round((h.scrollTop / max) * 100)) : 0;
+    fill.style.width = p + '%';
+    pct.textContent = p + '%';
+    doneFlag.style.display = p >= 99 ? 'inline' : 'none';
+  }
+  document.addEventListener('scroll', updateProgress, {passive:true});
+  window.addEventListener('resize', updateProgress);
+  updateProgress();
+
+  // reveal on scroll
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }});
+  },{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // knowledge check
+  const quiz = document.getElementById('quiz');
+  const fb = document.getElementById('quizFb');
+  quiz.querySelectorAll('.opt').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      quiz.querySelectorAll('.opt').forEach(b=>{
+        b.disabled = true;
+        b.classList.add(b.dataset.a === 'right' ? 'correct' : 'wrong');
+      });
+      if(btn.dataset.a === 'right'){
+        fb.classList.remove('wrong-fb');
+        fb.innerHTML = '<strong>Correct.</strong> That\'s the job, and it\'s the one I\'ve been doing for years. Scroll on to complete the module.';
+      } else {
+        fb.classList.add('wrong-fb');
+        fb.innerHTML = '<strong>Not quite.</strong> The answer is B. Decks and posters don\'t reach a time-poor, multi-site team, but a mobile micro-module does. Scroll on to complete the module anyway, no judgement.';
+      }
+      fb.classList.add('show');
+    });
+  });
+</script>
+</body>
+</html>
